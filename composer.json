@@ -1,0 +1,43 @@
+{
+  "name": "vitek-dev/json-serializer",
+  "description": "JSON-preconfigured symfony/serializer integration into Nette",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "nette",
+    "serializer",
+    "symfony"
+  ],
+  "authors": [
+    {
+      "name": "Daniel Vitek",
+      "email": "daniel@vitek.dev"
+    }
+  ],
+  "require": {
+    "nette/di": "^3.2",
+    "phpdocumentor/reflection-docblock": "^5.6",
+    "symfony/property-access": "^7.3",
+    "symfony/serializer": "^7.3"
+  },
+  "require-dev": {
+    "ergebnis/composer-normalize": "^2.47",
+    "nette/bootstrap": "^3.2",
+    "phpunit/phpunit": "^12.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "VitekDev\\Serializer\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "VitekDev\\Serializer\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true
+    }
+  }
+}

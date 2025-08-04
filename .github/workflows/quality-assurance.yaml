@@ -1,0 +1,45 @@
+name: QA
+
+on:
+  push:
+    branches: [ "*" ]
+
+permissions:
+  contents: read
+
+jobs:
+  qa-cs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run CS
+        run: docker compose run --rm qa bash -c "phpcs --no-cache --no-colors"
+
+  qa-stan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install composer dependencies
+        run: docker compose run --rm qa bash -c "composer install"
+
+      - name: Run Stan
+        run: docker compose run --rm qa bash -c "phpstan analyse --no-progress --no-ansi --no-interaction --memory-limit=512M"
+
+  composer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install composer dependencies
+        run: docker compose run --rm php bash -c "composer install"
+
+      - name: Validate composer.json and composer.lock
+        run: docker compose run --rm php bash -c "composer validate --strict"
+
+      - name: Verify composer.json is normalized
+        run: docker compose run --rm php bash -c "composer normalize --dry-run"

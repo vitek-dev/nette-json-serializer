@@ -1,0 +1,2 @@
+extensions:
+    testExtension: VitekDev\Serializer\DI\JsonSerializerExtension

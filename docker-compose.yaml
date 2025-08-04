@@ -1,0 +1,10 @@
+services:
+  php:
+    image: thecodingmachine/php:8.4-v4-cli
+    volumes:
+      - ./:/usr/src/app
+
+  qa:
+    image: ghcr.io/vitek-dev/qa:latest
+    volumes:
+      - './:/app'

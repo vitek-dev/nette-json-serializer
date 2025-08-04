@@ -1,0 +1,8 @@
+parameters:
+    level: 9
+    paths:
+        - src
+        - tests
+
+    ignoreErrors:
+        - '#PHPDoc tag @template T for method VitekDev\\Serializer\\JsonSerializer::deserialize\(\) with bound type class-string is not supported#'
