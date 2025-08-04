@@ -1,0 +1,18 @@
+name: Run PHPUnit Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Composer dependencies
+        run: docker compose run --rm php composer install --no-interaction --prefer-dist --no-progress
+      - name: Run PHPUnit
+        run: docker compose run --rm php vendor/bin/phpunit --configuration phpunit.xml
