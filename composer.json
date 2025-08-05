@@ -21,7 +21,6 @@
     "symfony/serializer": "^7.3"
   },
   "require-dev": {
-    "ergebnis/composer-normalize": "^2.47",
     "nette/bootstrap": "^3.2",
     "phpunit/phpunit": "^12.3"
   },
@@ -36,8 +35,5 @@
     }
   },
   "config": {
-    "allow-plugins": {
-      "ergebnis/composer-normalize": true
-    }
   }
 }
