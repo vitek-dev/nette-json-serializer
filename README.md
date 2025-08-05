@@ -14,6 +14,32 @@ Preconfigured symfony/serializer for Nette Framework.
 
 ## Installation
 
-```
+```shell
 composer require vitek-dev/nette-json-serializer
+```
+
+```neon
+extensions:
+    vd.serializer: VitekDev\Serializer\DI\JsonSerializerExtension
+```
+
+## Known issues
+
+### Class with no properties
+
+Deserialization of class with no properties will end up with NotNormalizableValueException
+
+```php
+class Garage {
+    /**
+     * @param Car[] $cars
+     */
+    public function __construct(
+        public array $cars,
+    ) {}
+}
+
+class Car {
+    // No properties
+}
 ```
