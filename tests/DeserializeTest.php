@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VitekDev\Serializer\Tests;
 
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
 use VitekDev\Serializer\Tests\Resources\Car;
 use VitekDev\Serializer\Tests\Resources\CarPlate;
 use VitekDev\Serializer\Tests\Resources\Garage;
@@ -13,14 +15,61 @@ final class DeserializeTest extends BaseTestCase
 {
     public function testDeserialize(): void
     {
-        $garage = $this->buildSerializer()->deserialize(<<<JSON
-{"hiddenCars":[{"vinCode":null,"owner":null,"brand":"VOLKSWAGEN","model":"Golf","carPlate":{"plateNumber":"BBB 4321"}}],"garageName":"Frantovo a Pepovo","publicCars":[{"vinCode":null,"owner":{"email":"frantuv@email.cz","fullName":"Franta Nov\u00e1k","phone":"+420 123 456 789"},"brand":"SKODA","model":"Octavia","carPlate":{"plateNumber":"AAA 1234"}},{"vinCode":null,"owner":{"email":null,"fullName":"Pepa Nov\u00e1k","phone":"+420 987 654 321"},"brand":"VOLKSWAGEN","model":"Golf","carPlate":{"plateNumber":"XXA 7852"}}],"infoBanner":"Oliver is missing"}
-JSON,
+        $garage = $this->buildSerializer()->deserialize(
+            $this->getTestString(),
             Garage::class,
         );
 
-        self::assertInstanceOf(Garage::class, $garage);
+        self::assertTrue($this->doTestAssertions($garage));
+    }
 
+    public function testDeserializeMessage(): void
+    {
+        $stream = $this->createMock(StreamInterface::class);
+        $stream
+            ->expects($this->once())
+            ->method('getContents')
+            ->willReturn($this->getTestString());
+
+        $message = $this->createMock(MessageInterface::class);
+        $message
+            ->expects($this->once())
+            ->method('getBody')
+            ->willReturn($stream);
+
+        $garage = $this->buildSerializer()->deserialize(
+            $message,
+            Garage::class,
+        );
+
+        self::assertTrue($this->doTestAssertions($garage));
+    }
+
+    public function testDeserializeStream(): void
+    {
+        $stream = $this->createMock(StreamInterface::class);
+        $stream
+            ->expects($this->once())
+            ->method('getContents')
+            ->willReturn($this->getTestString());
+
+        $garage = $this->buildSerializer()->deserialize(
+            $stream,
+            Garage::class,
+        );
+
+        self::assertTrue($this->doTestAssertions($garage));
+    }
+
+    private function getTestString(): string
+    {
+        return <<<JSON
+{"hiddenCars":[{"vinCode":null,"owner":null,"brand":"VOLKSWAGEN","model":"Golf","carPlate":{"plateNumber":"BBB 4321"}}],"garageName":"Frantovo a Pepovo","publicCars":[{"vinCode":null,"owner":{"email":"frantuv@email.cz","fullName":"Franta Nov\u00e1k","phone":"+420 123 456 789"},"brand":"SKODA","model":"Octavia","carPlate":{"plateNumber":"AAA 1234"}},{"vinCode":null,"owner":{"email":null,"fullName":"Pepa Nov\u00e1k","phone":"+420 987 654 321"},"brand":"VOLKSWAGEN","model":"Golf","carPlate":{"plateNumber":"XXA 7852"}}],"infoBanner":"Oliver is missing"}
+JSON;
+    }
+
+    private function doTestAssertions(Garage $garage): bool
+    {
         self::assertSame('Frantovo a Pepovo', $garage->garageName);
         self::assertSame('Oliver is missing', $garage->infoBanner);
 
@@ -55,5 +104,7 @@ JSON,
         self::assertSame('Golf', $garage->publicCars[1]->model);
         self::assertInstanceOf(CarPlate::class, $garage->publicCars[1]->carPlate);
         self::assertSame('XXA 7852', $garage->publicCars[1]->carPlate->plateNumber);
+
+        return true;
     }
 }

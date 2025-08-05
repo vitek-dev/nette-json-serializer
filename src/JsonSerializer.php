@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VitekDev\Serializer;
 
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
@@ -61,8 +63,16 @@ final readonly class JsonSerializer
      * @return T
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
-    public function deserialize(string $data, string $type): mixed
+    public function deserialize(string|MessageInterface|StreamInterface $data, string $type): mixed
     {
+        if ($data instanceof MessageInterface) {
+            $data = $data->getBody();
+        }
+
+        if ($data instanceof StreamInterface) {
+            $data = $data->getContents();
+        }
+
         return $this->serializer->deserialize($data, $type, 'json');
     }
 
