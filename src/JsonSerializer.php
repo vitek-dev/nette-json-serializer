@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -30,6 +31,7 @@ final readonly class JsonSerializer
 
         $this->serializer = new Serializer(
             normalizers: [
+                new DateTimeNormalizer(),
                 new BackedEnumNormalizer(),
                 new PropertyNormalizer(
                     classMetadataFactory: $classMetadata,
